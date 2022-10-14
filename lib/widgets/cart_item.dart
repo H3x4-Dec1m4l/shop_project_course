@@ -12,11 +12,7 @@ class CartWidget extends StatelessWidget {
       key: ValueKey(cartItem.id),
       background: Container(
         color: Theme.of(context).errorColor,
-        child: Icon(
-          Icons.delete,
-          color: Colors.white,
-          size:40
-        ),
+        child: Icon(Icons.delete, color: Colors.white, size: 40),
         alignment: Alignment.centerRight,
         padding: EdgeInsets.only(right: 20),
         margin: EdgeInsets.symmetric(
@@ -25,10 +21,34 @@ class CartWidget extends StatelessWidget {
         ),
       ),
       direction: DismissDirection.endToStart,
-      onDismissed: (_){
-        Provider.of<Cart>(context, listen: false).removeItem(cartItem.productId);
+      confirmDismiss: (_) {
+        return showDialog(
+          context: context,
+          builder: (ctx) => AlertDialog(
+            title: Text('Tem certeza!?'),
+            content: Text('Quer remover o Item do carrinho?'),
+            actions: [
+              FlatButton(
+                child: Text('Não'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              FlatButton(
+                child: Text('Sim'),
+                onPressed: () {
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          ),
+        );
       },
-      child: Card( 
+      onDismissed: (_) {
+        Provider.of<Cart>(context, listen: false)
+            .removeItem(cartItem.productId);
+      },
+      child: Card(
         margin: EdgeInsets.symmetric(
           horizontal: 15,
           vertical: 4,
@@ -41,13 +61,14 @@ class CartWidget extends StatelessWidget {
                 padding: EdgeInsets.all(1),
                 child: FittedBox(
                   child: Text(
-                    ' ${cartItem.price}',
+                    ' ${cartItem.price.toStringAsFixed(2)}',
                   ),
                 ),
               ),
             ),
             title: Text(cartItem.title),
-            subtitle: Text('total R\$ ${cartItem.price * cartItem.quantity}'),
+            subtitle: Text(
+                'total R\$ ${(cartItem.price * cartItem.quantity).toStringAsFixed(2)}'),
             trailing: Text('${cartItem.quantity}x'),
           ),
         ),

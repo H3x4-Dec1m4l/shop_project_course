@@ -1,55 +1,81 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
+
+import 'package:shop/providers/products_provider.dart';
+
 import '../models/product_model.dart';
-import '../models/cart.dart';
-import '../utils/app_routes.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/material.dart';
+import '../utils/app_routes.dart';
 
 class ProductItem extends StatelessWidget {
   // const ProductItem({Key key}) : super(key: key);
+  final ProductModel product;
+
+  ProductItem(this.product);
 
   @override
   Widget build(BuildContext context) {
-    final ProductModel productModel =
-        Provider.of<ProductModel>(context, listen: false);
-    final Cart cart =
-        Provider.of<Cart>(context, listen: false);
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(20),
-      child: GridTile(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.of(context)
-                .pushNamed(AppRoutes.PRODUCT_DETAIL, arguments: productModel);
-          },
-          child: Image.network(
-            productModel.imageUrl,
-            fit: BoxFit.cover,
-          ),
-        ),
-        footer: GridTileBar(
-          backgroundColor: Colors.black87,
-          leading: Consumer<ProductModel>(
-            builder: (ctx, productModel, _) => IconButton(
-              icon: Icon(productModel.isFavorite
-                  ? Icons.favorite
-                  : Icons.favorite_border),
-              color: Theme.of(context).accentColor,
+    final scaffold = Scaffold.of(context);
+    confirmed() {
+      return showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Tem certeza?'),
+          content: Text('Quer remover o Item do carrinho?'),
+          actions: [
+            FlatButton(
+              child: Text('não'),
               onPressed: () {
-                productModel.toggleFavorite();
+                Navigator.of(context).pop(false);
               },
             ),
-          ),
-          title: Text(
-            productModel.title,
-            textAlign: TextAlign.center,
-          ),
-          trailing: IconButton(
-            icon: Icon(Icons.shopping_cart),
-            color: Theme.of(context).accentColor,
-            onPressed: () {
-              cart.addItem(productModel);
-            },
-          ),
+            FlatButton(
+              child: Text('sim'),
+              onPressed: () {
+                Navigator.of(context).pop(true);
+              },
+            ),
+          ],
+        ),
+      ).then((value) async {
+        if (value) {
+          try {
+         await Provider.of<ProductsProvider>(context, listen: false)
+              .deleteProduct(product.id);
+        }on HttpException catch(error){
+          scaffold.showSnackBar(
+            SnackBar(content: Text('Ocorreu um erro ao excluir'))
+          );
+        }
+        }
+      });
+    }
+
+    return ListTile(
+      leading: CircleAvatar(
+        backgroundImage: NetworkImage(product.imageUrl),
+      ),
+      title: Text(product.title),
+      trailing: Container(
+        width: 100,
+        child: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.edit),
+              color: Theme.of(context).primaryColor,
+              onPressed: () {
+                Navigator.of(context)
+                    .pushNamed(AppRoutes.PRODUCTS_FORM, arguments: product);
+              },
+            ),
+            IconButton(
+              icon: Icon(Icons.delete),
+              color: Theme.of(context).errorColor,
+              onPressed: () {
+                confirmed();
+              },
+            ),
+          ],
         ),
       ),
     );
