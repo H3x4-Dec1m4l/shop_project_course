@@ -14,6 +14,10 @@ class ProductsProvider with ChangeNotifier {
       );
   
   List<ProductModel> _items = [];
+  String _token;
+  String _userId;
+
+  ProductsProvider([this._token,this._userId, this._items = const []]);
 
   List<ProductModel> get items => [..._items];
 
@@ -26,11 +30,14 @@ class ProductsProvider with ChangeNotifier {
   }
 
   Future<void> loadingProducts() async {
-    final response = await http.get(_url);
+    final response = await http.get(Uri.parse('$_url?auth=$_token'));
     Map<String, dynamic> data = json.decode(response.body);
+    final favResponse = await http.get(Uri.parse('${Constants.BASE_API_URL}/userFavorites/$_userId.json?auth=$_token'));
+    final favMap = json.decode(favResponse.body);
     _items.clear();
     if (data != null) {
       data.forEach((productId, productData) {
+        final isFavorite = favMap == null ? false : favMap[productId] ?? false;
         _items.add(
           ProductModel(
             id: productId,
@@ -38,7 +45,7 @@ class ProductsProvider with ChangeNotifier {
             description: productData['description'],
             price: productData['price'],
             imageUrl: productData['imageUrl'],
-            isFavorite: productData['isFavorite'],
+            isFavorite: isFavorite,
           ),
         );
       });
@@ -55,7 +62,7 @@ class ProductsProvider with ChangeNotifier {
         'description': newProduct.description,
         'price': newProduct.price,
         'imageUrl': newProduct.imageUrl,
-        'isFavorite': newProduct.isFavorite,
+        
       }),
     );
     _items.add(ProductModel(
@@ -76,7 +83,7 @@ class ProductsProvider with ChangeNotifier {
 
     if (index >= 0) {
       await http.patch( 
-       Uri.parse("$_updateUrl/${product.id}.json"),
+       Uri.parse("$_updateUrl/${product.id}.json?auth=$_token"),
         body: json.encode({
           'title': product.title,
         'description': product.description,
@@ -95,7 +102,7 @@ class ProductsProvider with ChangeNotifier {
       final product = _items [index];
       _items.remove(product);
       notifyListeners();
-      final response = await http.delete( Uri.parse("$_updateUrl/${product.id}.json"));
+      final response = await http.delete( Uri.parse("$_updateUrl/${product.id}.json?auth=$_token"));
       if(response.statusCode >= 400){
         _items.insert(index, product);
         notifyListeners(); 
