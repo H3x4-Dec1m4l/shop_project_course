@@ -75,7 +75,7 @@ class _OrderButtonState extends State<OrderButton> {
 
   @override
   Widget build(BuildContext context) {
-    return FlatButton(
+    return TextButton(
       child: _isLoading ? CircularProgressIndicator() : Text(
         'COMPRAR',
         // style: TextStyle(color: Theme.of(context).primaryColor),

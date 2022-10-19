@@ -15,7 +15,7 @@ class ProductItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scaffold = Scaffold.of(context);
+    final scaffold = ScaffoldMessenger.of(context);
     confirmed() {
       return showDialog(
         context: context,
@@ -23,13 +23,13 @@ class ProductItem extends StatelessWidget {
           title: Text('Tem certeza?'),
           content: Text('Quer remover o Item do carrinho?'),
           actions: [
-            FlatButton(
+            TextButton(
               child: Text('não'),
               onPressed: () {
                 Navigator.of(context).pop(false);
               },
             ),
-            FlatButton(
+            TextButton(
               child: Text('sim'),
               onPressed: () {
                 Navigator.of(context).pop(true);

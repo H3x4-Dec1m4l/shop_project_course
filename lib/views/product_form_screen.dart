@@ -98,7 +98,7 @@ class _ProductFormScreenState extends State<ProductFormScreen> {
                   title: Text('Ocorreu um erro!'),
                   content: Text('$error'),
                   actions: [
-                    FlatButton(
+                    TextButton(
                       child: Text('OK'),
                       onPressed: () => Navigator.of(context).pop(),
                     )
