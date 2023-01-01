@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-
+import '../utils/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shop/data/store.dart';
@@ -34,8 +34,11 @@ class Auth with ChangeNotifier {
 
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
+       
     final url =
         'https://identitytoolkit.googleapis.com/v1/accounts:$urlSegment?key=AIzaSyAO6zMaVdcAVRCW4VCOuwbPqXBGGYcyV98';
+      
+    
 
     final response = await http.post(Uri.parse(url),
         body: json.encode({
@@ -55,6 +58,7 @@ class Auth with ChangeNotifier {
         ),
       ));
 
+      
       Store.saveMap('userData', {
         'token': _token,
         'userId': _userId,
@@ -66,9 +70,20 @@ class Auth with ChangeNotifier {
     return Future.value();
   }
 
-  Future<void> signup(String email, String password) async {
+//  Future<void> addUser() async {
+//     final Uri _url = Uri.https(
+//       '${Constants.BASE_API_URI}', '/User');
+//         final uid = http.post(_url, body:json.decode)
+//       }
+
+  Future<void> signup(String email, String password, /* String uid */) async {
+    
     return _authenticate(email, password, 'signUp');
+
+    
   }
+
+
 
   Future<void> login(String email, String password) async {
     return _authenticate(email, password, 'signInWithPassword');

@@ -17,7 +17,7 @@ class AuthOrHomeScreen extends StatelessWidget {
           return Center(child: CircularProgressIndicator());
         } else if (snapshot.error != null) {
           return Center(
-            child: Text('Ocorreu um erro ao acessar os pedidos'),
+            child: Text('Ocorreu um erro ao acessar a Loja'),
           );
         } else {
           return auth.isAuth ? ProductsOverviewScreen() : AutenticatorScreen();

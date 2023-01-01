@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shop/providers/products_provider.dart';
-import 'package:shop/views/products_screen.dart';
+// import 'package:shop/views/products_screen.dart';
 import '../models/cart.dart';
 import '../widgets/product_grid.dart';
 import '../widgets/badge.dart';
@@ -35,8 +35,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).backgroundColor,
       appBar: AppBar(
-        title: Center(child: Text('Minha loja')),
+        title: Center(child: Text('GG Gamer')),
         actions: [
           PopupMenuButton(
             onSelected: (FilterOptions selectedValue) {

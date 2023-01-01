@@ -229,7 +229,7 @@ class _AuthCardState extends State<AuthCard>
               TextButton(
                 onPressed: _switchAuthMode,
                 child: Text(
-                  "ALTERNAR P/ ${_authMode == AuthMode.Login ? 'REGISTRAR' : 'LOGIN'}",
+                  "${_authMode == AuthMode.Login ? 'CRIAR CONTA' : 'FAZER LOGIN'}",
                 ),
                 style: ButtonStyle(
                   foregroundColor: MaterialStateProperty.all<Color>(

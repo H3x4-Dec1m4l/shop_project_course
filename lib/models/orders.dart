@@ -23,8 +23,6 @@ class Orders with ChangeNotifier {
       '${Constants.BASE_API_URL}/orders');
   String _token;
   String _userId;
-
-
   List<Order> _items = [];
 
   Orders([this._token, this._userId, this._items = const []]);
